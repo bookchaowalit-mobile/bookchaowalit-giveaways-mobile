@@ -3,6 +3,14 @@ library;
 
 import 'dart:math';
 
+import 'package:characters/characters.dart';
+
+const maxNameLength = 80;
+
+/// Zero-width space and BOM often ride along when names are pasted from web
+/// pages or spreadsheets; they would make `Bob` and `Bob\u200B` different.
+final _invisible = RegExp('[\u200B\uFEFF]');
+
 class EntrantList {
   final List<String> _names = [];
   final Set<String> _keys = {};
@@ -10,14 +18,17 @@ class EntrantList {
   List<String> get names => List.unmodifiable(_names);
   int get length => _names.length;
 
-  static String _key(String name) =>
-      name.trim().replaceAll(RegExp(r'\s+'), ' ').toLowerCase();
+  static String _clean(String name) =>
+      name.replaceAll(_invisible, '').trim().replaceAll(RegExp(r'\s+'), ' ');
+
+  static String _key(String name) => _clean(name).toLowerCase();
 
   /// Adds one entrant. Returns false for blank names or duplicates
   /// (compared case-insensitively with collapsed whitespace).
   bool add(String name) {
-    final clean = name.trim().replaceAll(RegExp(r'\s+'), ' ');
-    if (clean.isEmpty || clean.length > 80) return false;
+    final clean = _clean(name);
+    // Grapheme clusters, so emoji and Thai combining marks count once.
+    if (clean.isEmpty || clean.characters.length > maxNameLength) return false;
     if (!_keys.add(_key(clean))) return false;
     _names.add(clean);
     return true;

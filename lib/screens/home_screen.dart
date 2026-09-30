@@ -78,11 +78,25 @@ class _HomeScreenState extends State<HomeScreen> {
             icon: const Icon(Icons.person_add),
             label: const Text('Add'),
           ),
-          if (_message != null) Text(_message!, key: const Key('add-message')),
+          if (_message != null)
+            Semantics(
+              liveRegion: true,
+              child: Text(_message!, key: const Key('add-message')),
+            ),
           const SizedBox(height: 16),
-          Row(
+          // Wrap (not Row) so large text sizes flow onto a second line
+          // instead of overflowing on a phone.
+          Wrap(
+            crossAxisAlignment: WrapCrossAlignment.center,
+            spacing: 8,
             children: [
-              Text('Winners: $_winnerCount', style: textTheme.titleMedium),
+              Semantics(
+                liveRegion: true,
+                child: Text(
+                  'Winners: $_winnerCount',
+                  style: textTheme.titleMedium,
+                ),
+              ),
               IconButton(
                 tooltip: 'Fewer winners',
                 icon: const Icon(Icons.remove),
@@ -97,7 +111,6 @@ class _HomeScreenState extends State<HomeScreen> {
                     ? () => setState(() => _winnerCount++)
                     : null,
               ),
-              const Spacer(),
               FilledButton.icon(
                 key: const Key('draw'),
                 onPressed: canDraw ? _draw : null,
@@ -110,7 +123,9 @@ class _HomeScreenState extends State<HomeScreen> {
             Text('Winners', style: textTheme.titleMedium),
             for (var i = 0; i < _winners.length; i++)
               ListTile(
-                leading: CircleAvatar(child: Text('${i + 1}')),
+                leading: CircleAvatar(
+                  child: Text('${i + 1}', semanticsLabel: 'Winner ${i + 1}'),
+                ),
                 title: Text(_winners[i], key: Key('winner-$i')),
               ),
           ],
