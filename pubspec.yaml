@@ -1,5 +1,5 @@
 name: giveaways
-description: "Giveaways — Mobile app (flutter)"
+description: "Collect giveaway entrants and draw fair, duplicate-free winners."
 publish_to: "none"
 version: 1.0.0+1
 
@@ -9,9 +9,8 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+  characters: ^1.4.0
   cupertino_icons: ^1.0.8
-  go_router: ^14.2.0
-  flutter_riverpod: ^2.5.1
 
 dev_dependencies:
   flutter_test:
